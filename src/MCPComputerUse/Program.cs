@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using ModelContextProtocol;
 using ModelContextProtocol.Server;
 using System.Reflection;
@@ -37,11 +38,14 @@ public static class Program
             
             Console.Error.WriteLine($"Starting MCP Computer Use server at {DateTime.Now}");
             Console.Error.WriteLine($"Log file: {logFile}");
-            
+
             // Build and run the MCP server
             var builder = Host.CreateEmptyApplicationBuilder(null);
             builder.Services
-                .AddMcpServer()
+                .AddMcpServer(options =>
+                {
+                    options.ServerInfo = new() { Name = "MCPComputerUse", Version = "1.0" };
+                })
                 .WithStdioServerTransport()
                 .WithToolsFromAssembly(Assembly.GetExecutingAssembly());
 
